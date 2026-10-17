@@ -1,0 +1,20 @@
+{
+  "name": "masjid-namoz-vaqtlari",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Toshkent shahridagi 166+ masjidning aniq geolokatsiyasi va 5 vaqt namoz vaqtlari (PWA, Android & iOS)",
+  "scripts": {
+    "start": "python server.py 8080"
+  },
+  "keywords": [
+    "masjid",
+    "namoz",
+    "tashkent",
+    "prayer-times",
+    "pwa",
+    "ios",
+    "android",
+    "leaflet",
+    "dark-mode"
+  ]
+}
