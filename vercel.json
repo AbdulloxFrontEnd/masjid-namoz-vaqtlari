@@ -1,56 +1,37 @@
 {
   "version": 2,
-  "public": true,
-  "routes": [
+  "outputDirectory": "app_web",
+  "rewrites": [
     {
-      "src": "/api/masjidlar",
-      "dest": "/app_web/data/masjidlar.json",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Content-Type": "application/json; charset=utf-8"
-      }
+      "source": "/api/masjidlar",
+      "destination": "/data/masjidlar.json"
     },
     {
-      "src": "/admin",
-      "dest": "/app_web/admin.html"
+      "source": "/admin",
+      "destination": "/admin.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
     },
     {
-      "src": "/admin.html",
-      "dest": "/app_web/admin.html"
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Service-Worker-Allowed", "value": "/" },
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
     },
     {
-      "src": "/MasjidNamozVaqtlari.ipa",
-      "dest": "/app_web/MasjidNamozVaqtlari.ipa",
-      "headers": {
-        "Content-Type": "application/octet-stream"
-      }
-    },
-    {
-      "src": "/MasjidNamozVaqtlari.mobileconfig",
-      "dest": "/app_web/MasjidNamozVaqtlari.mobileconfig",
-      "headers": {
-        "Content-Type": "application/x-apple-aspen-config"
-      }
-    },
-    {
-      "src": "/sw.js",
-      "dest": "/app_web/sw.js",
-      "headers": {
-        "Service-Worker-Allowed": "/",
-        "Cache-Control": "no-cache, no-store, must-revalidate"
-      }
-    },
-    {
-      "src": "/manifest.json",
-      "dest": "/app_web/manifest.json",
-      "headers": {
-        "Content-Type": "application/manifest+json"
-      }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/app_web/$1"
+      "source": "/MasjidNamozVaqtlari.ipa",
+      "headers": [
+        { "key": "Content-Type", "value": "application/octet-stream" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"MasjidNamozVaqtlari.ipa\"" }
+      ]
     }
   ]
 }
