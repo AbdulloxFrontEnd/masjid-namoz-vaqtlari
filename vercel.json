@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "cleanUrls": true,
   "public": true,
   "routes": [
     {
@@ -11,6 +10,14 @@
         "Cache-Control": "no-cache, no-store, must-revalidate",
         "Content-Type": "application/json; charset=utf-8"
       }
+    },
+    {
+      "src": "/admin",
+      "dest": "/app_web/admin.html"
+    },
+    {
+      "src": "/admin.html",
+      "dest": "/app_web/admin.html"
     },
     {
       "src": "/MasjidNamozVaqtlari.ipa",
@@ -25,10 +32,6 @@
       "headers": {
         "Content-Type": "application/x-apple-aspen-config"
       }
-    },
-    {
-      "src": "/admin",
-      "dest": "/app_web/admin.html"
     },
     {
       "src": "/sw.js",
