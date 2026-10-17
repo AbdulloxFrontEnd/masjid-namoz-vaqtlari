@@ -1,0 +1,79 @@
+[
+  {
+    "id": "imom_1",
+    "login": "hazrati_imom",
+    "phone": "+998 90 111 01 01",
+    "password": "hazrat123",
+    "name": "Habibulloh domla Abdurazzoqov",
+    "role": "Imom-xatib",
+    "mosqueId": "masjid-toshkent-1",
+    "mosqueName": "Hazrati Imom (Xasti Imom) jome masjidi",
+    "mosqueDistrict": "Olmazor tumani"
+  },
+  {
+    "id": "imom_2",
+    "login": "minor_masjid",
+    "phone": "+998 90 222 02 02",
+    "password": "minor123",
+    "name": "Rahmatulloh domla Sayfuddinov",
+    "role": "Imom-xatib",
+    "mosqueId": "masjid-toshkent-2",
+    "mosqueName": "Minor (Oq masjid) jome masjidi",
+    "mosqueDistrict": "Yunusobod tumani"
+  },
+  {
+    "id": "imom_3",
+    "login": "kokcha_masjid",
+    "phone": "+998 90 333 03 03",
+    "password": "kokcha123",
+    "name": "Yahyo domla Abdurahmonov",
+    "role": "Imom-xatib",
+    "mosqueId": "masjid-toshkent-3",
+    "mosqueName": "Shayx Zayniddin (Koʻkcha) jome masjidi",
+    "mosqueDistrict": "Shayxontohur tumani"
+  },
+  {
+    "id": "imom_4",
+    "login": "novza_masjid",
+    "phone": "+998 90 444 04 04",
+    "password": "novza123",
+    "name": "Jaloliddin domla Hamroqulov",
+    "role": "Imom-xatib",
+    "mosqueId": "masjid-toshkent-4",
+    "mosqueName": "Novza jome masjidi",
+    "mosqueDistrict": "Chilonzor tumani"
+  },
+  {
+    "id": "imom_5",
+    "login": "islom_ota",
+    "phone": "+998 90 555 05 05",
+    "password": "islom123",
+    "name": "Jasurbek domla Raupov",
+    "role": "Imom-xatib",
+    "mosqueId": "masjid-toshkent-5",
+    "mosqueName": "Islom Ota jome masjidi",
+    "mosqueDistrict": "Yashnobod tumani"
+  },
+  {
+    "id": "imom_6",
+    "login": "suzuk_ota",
+    "phone": "+998 90 666 06 06",
+    "password": "suzuk123",
+    "name": "Zokirjon domla Sharifov",
+    "role": "Imom-xatib",
+    "mosqueId": "masjid-toshkent-6",
+    "mosqueName": "Suzuk Ota jome masjidi",
+    "mosqueDistrict": "Shayxontohur tumani"
+  },
+  {
+    "id": "admin_root",
+    "login": "admin",
+    "phone": "+998 71 200 00 00",
+    "password": "masjid2026",
+    "name": "O'zbekiston Musulmonlari Idorasi Mas'uli",
+    "role": "Bosh Administrator",
+    "mosqueId": "all",
+    "mosqueName": "Barcha 166 ta Toshkent masjidlari",
+    "mosqueDistrict": "Toshkent shahri"
+  }
+]

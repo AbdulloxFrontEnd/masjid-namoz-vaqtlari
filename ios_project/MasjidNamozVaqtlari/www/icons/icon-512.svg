@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#044e3b" />
+      <stop offset="50%" stop-color="#065f46" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+    <linearGradient id="gold512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad512)"/>
+  <circle cx="256" cy="256" r="210" fill="none" stroke="url(#gold512)" stroke-width="4" stroke-dasharray="10 10" opacity="0.6"/>
+
+  <!-- Main Mosque Dome -->
+  <path d="M256 120 C220 120 190 155 190 200 C190 230 215 250 215 360 L297 360 C297 250 322 230 322 200 C322 155 292 120 256 120 Z" fill="#ffffff" opacity="0.95"/>
+  
+  <!-- Crescent & Star -->
+  <path d="M256 75 C268 75 278 84 278 96 C278 108 268 117 256 117 C247 117 241 112 241 112 C248 109 253 103 253 96 C253 89 248 83 241 80 C246 76 251 75 256 75 Z" fill="url(#gold512)"/>
+  
+  <!-- Minaret Left -->
+  <rect x="110" y="180" width="28" height="180" fill="#ffffff" opacity="0.9" rx="4"/>
+  <polygon points="102,180 124,120 146,180" fill="url(#gold512)"/>
+  <circle cx="124" cy="112" r="8" fill="url(#gold512)"/>
+  
+  <!-- Minaret Right -->
+  <rect x="374" y="180" width="28" height="180" fill="#ffffff" opacity="0.9" rx="4"/>
+  <polygon points="366,180 388,120 410,180" fill="url(#gold512)"/>
+  <circle cx="388" cy="112" r="8" fill="url(#gold512)"/>
+
+  <!-- Building Base -->
+  <rect x="125" y="300" width="262" height="70" fill="#ecfdf5" rx="8"/>
+  <!-- Central Arch -->
+  <path d="M226 370 L226 310 C226 295 286 295 286 310 L286 370 Z" fill="#047857"/>
+  <!-- Side Arches -->
+  <path d="M156 365 L156 325 C156 315 186 315 186 325 L186 365 Z" fill="#047857"/>
+  <path d="M326 365 L326 325 C326 315 356 315 356 325 L356 365 Z" fill="#047857"/>
+
+  <!-- Golden decorative text -->
+  <text x="256" y="440" font-family="system-ui, sans-serif" font-size="34" font-weight="700" fill="url(#gold512)" text-anchor="middle" letter-spacing="2">NAMOZ VAQTLARI</text>
+</svg>

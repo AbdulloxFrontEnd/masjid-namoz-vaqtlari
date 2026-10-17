@@ -1,0 +1,32 @@
+# Node / Vercel
+node_modules/
+.vercel/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Chrome debug temp
+temp_chrome/
+
+# iOS build artifacts (keep ipa and configs)
+build_ios/
+
+# Android build artifacts
+.gradle/
+build/
+android_project/.gradle/
+android_project/build/
+android_project/app/build/
+*.apk
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db

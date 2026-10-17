@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>FullScreen</key>
+            <true/>
+            <key>Icon</key>
+            <data>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</data>
+            <key>IsRemovable</key>
+            <true/>
+            <key>Label</key>
+            <string>Namoz Vaqtlari</string>
+            <key>PayloadDescription</key>
+            <string>Toshkent masjidlari va namoz vaqtlari ilovasi</string>
+            <key>PayloadDisplayName</key>
+            <string>Namoz Vaqtlari</string>
+            <key>PayloadIdentifier</key>
+            <string>uz.masjid.namozvaqtlari.webclip</string>
+            <key>PayloadType</key>
+            <string>com.apple.webClip.managed</string>
+            <key>PayloadUUID</key>
+            <string>4F73C0A1-8E23-421D-9B41-8DA45B259A11</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>Precomposed</key>
+            <true/>
+            <key>URL</key>
+            <string>https://included-nat-collecting-quantum.trycloudflare.com</string>
+        </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>Toshkent shahridagi 166 ta masjid xaritasi va aniq namoz vaqtlari ilovasini o'rnatish profili</string>
+    <key>PayloadDisplayName</key>
+    <string>Namoz Vaqtlari Ilovasi</string>
+    <key>PayloadIdentifier</key>
+    <string>uz.masjid.namozvaqtlari.profile</string>
+    <key>PayloadOrganization</key>
+    <string>Masjid Namoz Vaqtlari</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>7C218B12-613A-4F8C-98A1-137DB9234A56</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>

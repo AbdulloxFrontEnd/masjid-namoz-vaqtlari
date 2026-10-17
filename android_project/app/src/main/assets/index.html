@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Toshkent Masjidlari & Namoz Vaqtlari</title>
+  <meta name="description" content="Toshkent shahridagi barcha masjidlar xaritasi va masjid xodimlari tomonidan belgilangan namoz vaqtlari">
+  <meta name="theme-color" content="#064e3b">
+  
+  <!-- PWA & Mobile Web App Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Namoz Vaqtlari">
+  <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192.png">
+
+  <!-- Leaflet Map CSS & MarkerCluster CSS -->
+  <link rel="stylesheet" href="css/leaflet.css">
+  <link rel="stylesheet" href="css/MarkerCluster.css?v=17.0">
+  <link rel="stylesheet" href="css/MarkerCluster.Default.css?v=17.0">
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css?v=18.0">
+</head>
+<body>
+
+<div id="app-container">
+  
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-top">
+      <div class="brand-section">
+        <img src="icons/icon-192.svg" alt="Masjid Logosi" class="brand-logo">
+        <div class="brand-titles-wrap">
+          <div class="brand-title-row">
+            <h1 class="brand-title">Namoz Vaqtlari</h1>
+            <!-- Live Active Prayer Pill (shown when any prayer is in progress) -->
+            <div id="header-active-prayer-badge" class="header-active-prayer-badge" style="display: none;" title="Hozirgi namoz vaqti">
+              <span class="active-dot"></span>
+              <span id="header-active-prayer-text">Asr 16:30</span>
+            </div>
+          </div>
+          <div class="brand-subtitle">
+            <span>🕌 Toshkent Masjidlari</span>
+            <span class="mosque-counter-badge" id="header-counter">166 ta masjid</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- Always accessible buttons -->
+        <button id="btn-theme-toggle" class="header-btn" title="Tungi / Kunduzgi rejim">
+          🌙
+        </button>
+        <!-- If authorized imam logged in, show small badge; otherwise hidden -->
+        <a href="admin.html" id="header-imam-indicator" class="header-btn imam-session-badge" title="Masjid mas'uli portali" style="display: none;">
+          👤 <span id="header-user-label">Mas'ul</span>
+        </a>
+        <!-- Modern Menu Toggle Button (Animated Morphing Hamburger) -->
+        <button id="btn-toggle-menu" class="header-btn btn-menu-toggle" aria-expanded="false" title="Asboblar va filtrlarni ochish / yopish">
+          <span class="menu-burger-icon" aria-hidden="true">
+            <span class="burger-bar bar-1"></span>
+            <span class="burger-bar bar-2"></span>
+            <span class="burger-bar bar-3"></span>
+          </span>
+          <span class="menu-label">Menyu</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Collapsible Menu Panel (Slides down smoothly when button is tapped on phones) -->
+    <div id="header-collapse-section" class="header-collapse-panel">
+      <!-- Quick Tools Bar -->
+      <div class="header-tools-row">
+        <button id="btn-qibla" class="header-btn tool-btn" title="Qibla yo'nalishi">
+          🧭 <span>Qibla</span>
+        </button>
+        <button id="btn-tasbeh" class="header-btn tool-btn" title="Raqamli Tasbeh">
+          📿 <span>Tasbeh</span>
+        </button>
+        <button id="btn-toggle-list" class="header-btn tool-btn" title="Masjidlar ro'yxati">
+          📋 <span>Ro'yxat</span>
+        </button>
+        <button id="btn-pwa-install" class="header-btn install-btn-pulse tool-btn" title="Ilovani telefonga o'rnatish" style="display: none;">
+          📲 <span>O'rnatish</span>
+        </button>
+      </div>
+
+      <!-- Live Date and Time Bar -->
+      <div class="live-bar">
+        <div class="live-date-text">
+          📅 <span id="header-live-date">Yuklanmoqda...</span>
+        </div>
+        <div class="live-time-badge">
+          ⏱️ <span id="header-live-time">--:--:--</span>
+        </div>
+      </div>
+
+      <!-- Tashkent Districts Filter Bar -->
+      <nav class="filter-bar" id="filter-bar">
+        <button class="filter-chip active" data-filter="all">Barchasi (166)</button>
+        <button class="filter-chip" data-filter="Olmazor">Olmazor (32)</button>
+        <button class="filter-chip" data-filter="Shayxontohur">Shayxontohur (26)</button>
+        <button class="filter-chip" data-filter="Mirzo Ulug'bek">Mirzo Ulug'bek (23)</button>
+        <button class="filter-chip" data-filter="Uchtepa">Uchtepa (16)</button>
+        <button class="filter-chip" data-filter="Yunusobod">Yunusobod (15)</button>
+        <button class="filter-chip" data-filter="Sergeli">Sergeli (14)</button>
+        <button class="filter-chip" data-filter="Chilonzor">Chilonzor (12)</button>
+        <button class="filter-chip" data-filter="Yashnobod">Yashnobod (12)</button>
+        <button class="filter-chip" data-filter="Yakkasaroy">Yakkasaroy (5)</button>
+        <button class="filter-chip" data-filter="Bektemir">Bektemir (4)</button>
+        <button class="filter-chip" data-filter="Yangihayot">Yangihayot (4)</button>
+      </nav>
+
+      <!-- Discreet links to Admin Portal & iOS Apps -->
+      <div class="header-admin-row" style="padding: 6px 12px 2px; display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.12); margin-top: 4px;">
+        <a href="admin.html" class="admin-portal-link" style="color: #a7f3d0; text-decoration: none; font-size: 0.74rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;" title="Masjid xodimlari va imomlar uchun maxsus portal">
+          <span>🔐</span> <span>Imomlar portali</span> <span>➔</span>
+        </a>
+        <span style="opacity: 0.35; color: #fff;">|</span>
+        <a href="MasjidNamozVaqtlari.ipa" download="MasjidNamozVaqtlari.ipa" class="admin-portal-link" style="color: #93c5fd; text-decoration: none; font-size: 0.74rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;" title="iPhone uchun .IPA faylini yuklab olish">
+          <span>🍏</span> <span>iPhone .IPA yuklab olish</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filter & Search Section -->
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span>🔍</span>
+      <input type="text" id="search-input" placeholder="Masjid nomi, tumani yoki ko'chasini qidiring...">
+      <button id="btn-clear-search" class="search-clear-btn" title="Tozalash" style="display:none;">✕</button>
+    </div>
+  </div>
+
+  <!-- Floating Nearest Mosque Notification Banner -->
+  <div id="nearest-mosque-banner" class="nearest-banner" style="display: none;">
+    <div class="nearest-content">
+      <div class="nearest-icon">🕌</div>
+      <div class="nearest-details">
+        <div class="nearest-label">Sizga eng yaqin masjid:</div>
+        <div class="nearest-title" id="nearest-mosque-name">--</div>
+        <div class="nearest-dist" id="nearest-mosque-dist">-- m</div>
+      </div>
+    </div>
+    <button id="btn-view-nearest" class="nearest-btn">Ko'rish</button>
+  </div>
+
+  <!-- Interactive Map Container -->
+  <main id="map" role="region" aria-label="Masjidlar xaritasi"></main>
+
+  <!-- Floating Action Buttons (Hidden by default for regular public worshippers) -->
+  <button id="btn-add-mosque" class="fab-add-text" title="Yangi masjid qo'shish" style="display: none;">
+    <span>➕</span>
+    <span>Yangi masjid qo'shish</span>
+  </button>
+
+  <div class="fab-container">
+    <button id="btn-map-layer" class="fab" title="Xarita qatlamini almashtirish (Sun'iy yo'ldosh / Oddiy)">
+      🗺️
+    </button>
+    <button id="btn-my-location" class="fab fab-accent" title="Mening joylashuvim">
+      📍
+    </button>
+    <button id="btn-recenter" class="fab" title="Toshkent markaziga qaytish">
+      🎯
+    </button>
+  </div>
+
+</div>
+
+<!-- ========================================================================= -->
+<!-- 1. MOSQUE PRAYER TIMES POPUP / MODAL (MAIN USER REQUIREMENT)              -->
+<!-- "когда нажимается на мачеть нужно чтобы выходило окно с время и дата      -->
+<!--  bomdod peshin asr shom va hufton"                                        -->
+<!-- ========================================================================= -->
+<div id="mosque-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-sheet" role="dialog" aria-labelledby="modal-mosque-name">
+    <div class="sheet-handle"></div>
+    
+    <!-- Mosque Header -->
+    <div class="mosque-modal-header">
+      <div class="mosque-title-wrap">
+        <div class="mosque-avatar">
+          <img src="icons/mosque_pin.svg" alt="Masjid">
+        </div>
+        <div class="mosque-info">
+          <h2 id="modal-mosque-name">Hazrati Imom masjidi</h2>
+          <div class="mosque-address">
+            <span>📍</span> <span id="modal-mosque-address">Olmazor tumani, Qorasaroy ko'chasi</span>
+            <span id="modal-mosque-distance" class="distance-chip" style="display: none;"></span>
+          </div>
+        </div>
+      </div>
+      <button class="modal-close-btn" id="btn-close-modal" aria-label="Yopish">✕</button>
+    </div>
+
+    <!-- Live Date and Time Display inside Mosque Window -->
+    <div class="date-time-card">
+      <div class="date-section">
+        <div class="date-title">Bugungi sana</div>
+        <div class="date-value" id="modal-current-date">--</div>
+      </div>
+      <div class="time-section">
+        <div class="time-title">Hozirgi vaqt</div>
+        <div class="time-clock" id="modal-current-time">--:--:--</div>
+      </div>
+    </div>
+
+    <!-- Next Prayer Countdown Banner -->
+    <div class="next-prayer-banner" id="next-prayer-banner">
+      <div class="next-prayer-title">
+        <span>⏳</span> <span id="next-prayer-label">Keyingi namoz: Peshin</span>
+      </div>
+      <div class="next-prayer-time" id="next-prayer-time">12:45</div>
+    </div>
+
+    <!-- 5 Prayer Times Grid: Bomdod, Peshin, Asr, Shom, Hufton -->
+    <div class="prayers-grid">
+      
+      <!-- Bomdod -->
+      <div class="prayer-card" id="card-bomdod">
+        <div class="prayer-name">Bomdod</div>
+        <div class="prayer-time-box" id="time-bomdod">05:40</div>
+      </div>
+
+      <!-- Peshin -->
+      <div class="prayer-card" id="card-peshin">
+        <div class="prayer-name">Peshin</div>
+        <div class="prayer-time-box" id="time-peshin">12:45</div>
+      </div>
+
+      <!-- Asr -->
+      <div class="prayer-card" id="card-asr">
+        <div class="prayer-name">Asr</div>
+        <div class="prayer-time-box" id="time-asr">16:30</div>
+      </div>
+
+      <!-- Shom -->
+      <div class="prayer-card" id="card-shom">
+        <div class="prayer-name">Shom</div>
+        <div class="prayer-time-box" id="time-shom">17:50</div>
+      </div>
+
+      <!-- Hufton -->
+      <div class="prayer-card" id="card-hufton">
+        <div class="prayer-name">Hufton</div>
+        <div class="prayer-time-box" id="time-hufton">19:15</div>
+      </div>
+
+    </div>
+
+    <!-- Juma Prayer Time (if available) -->
+    <div class="juma-badge-row" id="juma-row">
+      <span>🕌 <strong>Juma namozi vaqti:</strong></span>
+      <span id="time-juma" style="font-weight: 800; font-size: 0.95rem;">12:45</span>
+    </div>
+
+    <!-- Mosque Note / Announcement -->
+    <div class="mosque-note-box" id="mosque-note-box">
+      <span>📢</span>
+      <div id="modal-mosque-note">Masjid xodimi tomonidan belgilangan namoz vaqtlari.</div>
+    </div>
+
+    <!-- Actions: Edit Times (Only visible if logged in as assigned imam) / Directions / Share -->
+    <div class="modal-actions">
+      <!-- PROTECTED EDIT BUTTON: Only shown if logged in as assigned imam or system admin -->
+      <button id="btn-open-edit" class="btn-primary-action" style="display: none;">
+        <span>⏱️</span>
+        <span>Vaqtlarni kiritish / o'zgartirish (Imom)</span>
+      </button>
+
+      <div class="secondary-actions-row">
+        <button id="btn-navigate-yandex" class="btn-secondary-action" title="Yandex Xaritalar / Yandex Go orqali borish">
+          <span>🚕</span> <span>Yandex Go</span>
+        </button>
+        <button id="btn-navigate-google" class="btn-secondary-action" title="Google Maps orqali navigatsiya">
+          <span>🗺️</span> <span>Google Maps</span>
+        </button>
+        <button id="btn-share" class="btn-secondary-action" title="Namoz vaqtlarini Telegram/WhatsApp orqali ulashish">
+          <span>📤</span> <span>Ulashish</span>
+        </button>
+      </div>
+
+      <div class="secondary-actions-row" style="margin-top: 4px;">
+        <button id="btn-play-azan" class="btn-secondary-action">
+          <span id="azan-icon">🔔</span> <span id="azan-label">Azon ovozi</span>
+        </button>
+        <button id="btn-open-calendar" class="btn-secondary-action">
+          <span>📅</span> <span>Oylik taqvim</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 2. EDIT / SET PRAYER TIMES MODAL                                          -->
+<!-- ========================================================================= -->
+<div id="edit-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="mosque-modal-header">
+      <div>
+        <h2 class="editor-title">Namoz vaqtlarini belgilash</h2>
+        <div class="editor-subtitle" id="edit-mosque-subtitle">Hazrati Imom masjidi</div>
+      </div>
+      <button class="modal-close-btn" id="btn-close-edit">✕</button>
+    </div>
+
+    <form id="edit-times-form">
+      <!-- Editor Identity Banner -->
+      <div class="edit-author-banner" id="edit-author-box">
+        <span class="author-icon">🪪</span>
+        <div class="author-info">
+          <div class="author-title">Mas'ul tahrirchi: <strong id="edit-author-name">--</strong></div>
+          <div class="author-sub" id="edit-author-role">Imom-xatib</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="edit-date">📅 Sana (Qaysi kun uchun):</label>
+        <input type="date" id="edit-date" class="form-control" required>
+      </div>
+
+      <div class="prayer-inputs-grid">
+        <div class="prayer-input-card">
+          <label for="input-bomdod">Bomdod:</label>
+          <input type="time" id="input-bomdod" required>
+        </div>
+        <div class="prayer-input-card">
+          <label for="input-peshin">Peshin:</label>
+          <input type="time" id="input-peshin" required>
+        </div>
+        <div class="prayer-input-card">
+          <label for="input-asr">Asr:</label>
+          <input type="time" id="input-asr" required>
+        </div>
+        <div class="prayer-input-card">
+          <label for="input-shom">Shom:</label>
+          <input type="time" id="input-shom" required>
+        </div>
+        <div class="prayer-input-card" style="grid-column: span 2;">
+          <label for="input-hufton">Hufton:</label>
+          <input type="time" id="input-hufton" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="input-juma">🕌 Juma namozi vaqti:</label>
+        <input type="time" id="input-juma" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="input-izoh">📝 Masjid boshqaruvchisi izohi / E'lon:</label>
+        <input type="text" id="input-izoh" class="form-control" placeholder="Masalan: Azondan 20 daqiqa keyin jamoat...">
+      </div>
+
+      <button type="submit" class="btn-primary-action" style="margin-top: 10px;">
+        <span>💾</span> <span>Vaqtlarni saqlash va yangilash</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 3. ADD NEW MOSQUE MODAL                                                    -->
+<!-- ========================================================================= -->
+<div id="add-mosque-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="mosque-modal-header">
+      <div>
+        <h2 class="editor-title">Yangi masjid qo'shish</h2>
+        <div class="editor-subtitle">Toshkent xaritasiga yangi masjid va uning namoz vaqtlarini kiriting</div>
+      </div>
+      <button class="modal-close-btn" id="btn-close-add">✕</button>
+    </div>
+
+    <form id="add-mosque-form">
+      <div class="form-group">
+        <label class="form-label" for="add-nomi">🕌 Masjid nomi:</label>
+        <input type="text" id="add-nomi" class="form-control" placeholder="Masalan: Oltintepa jome masjidi" required>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <div class="form-group" style="flex: 1;">
+          <label class="form-label" for="add-shahar">Shahar:</label>
+          <input type="text" id="add-shahar" class="form-control" value="Toshkent" required>
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label class="form-label" for="add-tuman">Tuman:</label>
+          <input type="text" id="add-tuman" class="form-control" placeholder="Olmazor tumani" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="add-manzil">Manzil (Ko'cha, mo'ljal):</label>
+        <input type="text" id="add-manzil" class="form-control" placeholder="Qorasaroy ko'chasi" required>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <div class="form-group" style="flex: 1;">
+          <label class="form-label" for="add-lat">Kenglik (Latitude):</label>
+          <input type="number" step="0.0001" id="add-lat" class="form-control" placeholder="41.33" required>
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label class="form-label" for="add-lng">Uzunlik (Longitude):</label>
+          <input type="number" step="0.0001" id="add-lng" class="form-control" placeholder="69.24" required>
+        </div>
+      </div>
+
+      <p style="font-size: 0.74rem; color: #047857; margin-bottom: 8px;">
+        💡 <em>Maslahat: Koordinatalarni avtomatik olish uchun xarita ustiga bosishingiz ham mumkin.</em>
+      </p>
+
+      <div class="prayer-inputs-grid">
+        <div class="prayer-input-card">
+          <label for="add-bomdod">Bomdod:</label>
+          <input type="time" id="add-bomdod" value="05:40" required>
+        </div>
+        <div class="prayer-input-card">
+          <label for="add-peshin">Peshin:</label>
+          <input type="time" id="add-peshin" value="12:45" required>
+        </div>
+        <div class="prayer-input-card">
+          <label for="add-asr">Asr:</label>
+          <input type="time" id="add-asr" value="16:30" required>
+        </div>
+        <div class="prayer-input-card">
+          <label for="add-shom">Shom:</label>
+          <input type="time" id="add-shom" value="17:50" required>
+        </div>
+        <div class="prayer-input-card" style="grid-column: span 2;">
+          <label for="add-hufton">Hufton:</label>
+          <input type="time" id="add-hufton" value="19:15" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary-action">
+        <span>➕</span> <span>Masjidni xaritaga joylashtirish</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 4. MOSQUE LIST DRAWER                                                     -->
+<!-- ========================================================================= -->
+<div id="drawer-list" class="drawer-overlay">
+  <div class="drawer-panel">
+    <div class="drawer-header">
+      <div>
+        <h3 style="font-size: 1rem; font-weight: 700;">Toshkent masjidlari</h3>
+        <button id="btn-sort-nearest" class="drawer-sort-pill">📍 Yaqinlik bo'yicha</button>
+      </div>
+      <button class="modal-close-btn" id="btn-close-drawer" style="color: white; background: rgba(255,255,255,0.2);">✕</button>
+    </div>
+    <div class="drawer-list" id="drawer-items-container">
+      <!-- Items generated by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 5. QIBLA COMPASS MODAL                                                    -->
+<!-- ========================================================================= -->
+<div id="qibla-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-sheet qibla-sheet">
+    <div class="sheet-handle"></div>
+    <div class="mosque-modal-header">
+      <div>
+        <h2 class="editor-title">🧭 Qibla Kompasi</h2>
+        <div class="editor-subtitle">Muqaddas Ka'ba (Makka) tomon aniq yo'nalish</div>
+      </div>
+      <button class="modal-close-btn" id="btn-close-qibla">✕</button>
+    </div>
+
+    <!-- Alignment Status Banner (Turns golden-emerald when aligned) -->
+    <div id="qibla-alignment-banner" class="qibla-alignment-banner">
+      <span class="alignment-icon" id="alignment-icon">🧭</span>
+      <span id="qibla-alignment-text">Qiblani topish uchun telefonni buriling</span>
+    </div>
+
+    <div class="qibla-compass-wrap">
+      <!-- Fixed Outer Bezel with Forward Direction Indicator -->
+      <div class="qibla-compass-bezel">
+        <div class="compass-forward-pointer" title="Telefoningiz yo'nalishi (Oldinga)">
+          <span class="forward-arrow">▲</span>
+        </div>
+
+        <!-- Rotating Compass Dial (N points to real North) -->
+        <div class="qibla-dial" id="qibla-dial">
+          <!-- Cardinal Points -->
+          <div class="compass-marker north"><span>N</span></div>
+          <div class="compass-marker east"><span>E</span></div>
+          <div class="compass-marker south"><span>S</span></div>
+          <div class="compass-marker west"><span>W</span></div>
+
+          <!-- Compass Dial Ring Graduations -->
+          <div class="compass-ticks"></div>
+
+          <!-- Kaaba Fixed Target Marker on Dial (at exact Qibla bearing e.g. 240°) -->
+          <div class="qibla-kaaba-target" id="qibla-kaaba-target" style="transform: rotate(240deg);">
+            <div class="kaaba-target-line"></div>
+            <div class="kaaba-target-badge">
+              <span class="kaaba-emoji">🕋</span>
+            </div>
+          </div>
+
+          <!-- Center Needle (Points to Kaaba) -->
+          <div class="qibla-needle" id="qibla-needle">
+            <div class="needle-tip-north"></div>
+            <div class="needle-center-pivot"></div>
+            <div class="needle-tip-south"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sensor Permission Button (Shown if browser requires explicit permission like iOS) -->
+      <button id="btn-request-compass" class="btn-compass-permission" style="display: none;">
+        <span>📡</span> <span>Kompas datchigini yoqish (Ruxsat berish)</span>
+      </button>
+
+      <!-- Qibla Readings and Navigation Controls -->
+      <div class="qibla-info-box">
+        <div class="qibla-readings-row">
+          <div class="reading-card">
+            <div class="reading-label">Telefon:</div>
+            <div class="reading-value" id="compass-heading-val">--°</div>
+          </div>
+          <div class="reading-card highlight">
+            <div class="reading-label">Qibla:</div>
+            <div class="reading-value" id="qibla-target-val">240°</div>
+          </div>
+          <div class="reading-card">
+            <div class="reading-label">Makkagacha:</div>
+            <div class="reading-value" id="qibla-distance-val">3 360 km</div>
+          </div>
+        </div>
+
+        <div class="compass-status-bar" id="compass-status-text">
+          💡 <em>Telefonni gorizontal tuting. Sensor avtomatik aniqlanmoqda...</em>
+        </div>
+
+        <!-- Manual angle slider (useful for testing on PC / laptops without magnetometer) -->
+        <div class="manual-slider-wrap" id="manual-slider-wrap">
+          <div class="manual-slider-label">
+            <span>Kompasni qo'lda sinash:</span>
+            <strong id="slider-angle-label">0°</strong>
+          </div>
+          <input type="range" id="qibla-manual-slider" min="0" max="360" value="0">
+        </div>
+
+        <button id="btn-show-qibla-line" class="btn-primary-action" style="margin-top: 10px; width: 100%;">
+          <span>🗺️</span> <span>Xaritada Makka (Ka'ba) chizig'ini ko'rsatish</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 6. DIGITAL TASBEH (ZIKR COUNTER) MODAL                                   -->
+<!-- ========================================================================= -->
+<div id="tasbeh-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-sheet tasbeh-sheet">
+    <div class="sheet-handle"></div>
+    <div class="mosque-modal-header">
+      <div>
+        <h2 class="editor-title">📿 Raqamli Tasbeh</h2>
+        <div class="editor-subtitle">Namozdan keyingi zikr va tasbehlar</div>
+      </div>
+      <button class="modal-close-btn" id="btn-close-tasbeh">✕</button>
+    </div>
+
+    <div class="tasbeh-wrap">
+      <div class="tasbeh-chips">
+        <button class="tasbeh-chip active" data-zikr="Subhanalloh" data-target="33" data-arabic="سُبْحَانَ ٱللَّٰهِ">Subhanalloh (33)</button>
+        <button class="tasbeh-chip" data-zikr="Alhamdulillah" data-target="33" data-arabic="ٱلْحَمْدُ لِلَّٰهِ">Alhamdulillah (33)</button>
+        <button class="tasbeh-chip" data-zikr="Allohu Akbar" data-target="34" data-arabic="ٱللَّٰهُ أَكْبَرُ">Allohu Akbar (34)</button>
+      </div>
+
+      <div class="tasbeh-card">
+        <div class="tasbeh-arabic" id="tasbeh-arabic">سُبْحَانَ ٱللَّٰهِ</div>
+        <div class="tasbeh-title" id="tasbeh-title">Subhanalloh</div>
+
+        <button class="tasbeh-circle-btn" id="btn-tasbeh-count">
+          <span class="tasbeh-num" id="tasbeh-current-count">0</span>
+          <span class="tasbeh-max" id="tasbeh-max-count">/ 33</span>
+        </button>
+
+        <div class="tasbeh-meta">
+          <span id="tasbeh-total-count">Jami: 0 zikr</span>
+          <button id="btn-tasbeh-reset" class="tasbeh-reset-link">🔄 Qayta boshlash</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 7. MONTHLY PRAYER TIMETABLE MODAL                                         -->
+<!-- ========================================================================= -->
+<div id="calendar-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-sheet calendar-sheet">
+    <div class="sheet-handle"></div>
+    <div class="mosque-modal-header">
+      <div>
+        <h2 class="editor-title">📅 Oylik Namoz Taqvimi</h2>
+        <div class="editor-subtitle" id="calendar-subtitle">Toshkent shahri bo'yicha</div>
+      </div>
+      <button class="modal-close-btn" id="btn-close-calendar">✕</button>
+    </div>
+
+    <div class="calendar-scroll-wrap">
+      <table class="calendar-table">
+        <thead>
+          <tr>
+            <th>Kun</th>
+            <th>Bomdod</th>
+            <th>Peshin</th>
+            <th>Asr</th>
+            <th>Shom</th>
+            <th>Hufton</th>
+          </tr>
+        </thead>
+        <tbody id="calendar-table-body">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 8. AUTHENTICATION MODAL (KIRISH VA RO'YXATDAN O'TISH)                     -->
+<!-- ========================================================================= -->
+<div id="auth-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-sheet auth-sheet">
+    <div class="sheet-handle"></div>
+    <div class="mosque-modal-header">
+      <div>
+        <h2 class="editor-title" id="auth-modal-title">Masjid Boshqaruvi</h2>
+        <div class="editor-subtitle" id="auth-modal-subtitle">Namoz vaqtlarini kiritish uchun hisobingizga kiring</div>
+      </div>
+      <button class="modal-close-btn" id="btn-close-auth">✕</button>
+    </div>
+
+    <!-- Auth Tabs: Kirish / Ro'yxatdan o'tish -->
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab-btn active" id="tab-btn-login">🔑 Tizimga kirish</button>
+      <button type="button" class="auth-tab-btn" id="tab-btn-register">📝 Ro'yxatdan o'tish</button>
+    </div>
+
+    <!-- 1. LOGIN FORM -->
+    <form id="form-login" class="auth-form-body">
+      <div class="form-group">
+        <label class="form-label" for="login-phone">📞 Telefon raqami:</label>
+        <input type="tel" id="login-phone" class="form-control" placeholder="+998 90 123 45 67" required autocomplete="tel">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">🔒 Parol:</label>
+        <input type="password" id="login-password" class="form-control" placeholder="Parolingizni kiriting" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn-primary-action" style="margin-top: 14px;">
+        <span>🚀</span> <span>Tizimga kirish</span>
+      </button>
+
+      <div class="auth-divider"><span>yoki</span></div>
+
+      <button type="button" id="btn-demo-imam-login" class="btn-demo-login">
+        <span>⚡</span> <span>Demo Imom sifatida kirish (Tezkor sinov)</span>
+      </button>
+    </form>
+
+    <!-- 2. REGISTER FORM -->
+    <form id="form-register" class="auth-form-body" style="display: none;">
+      <div class="form-group">
+        <label class="form-label" for="reg-name">👤 F.I.Sh (Ism va familiya):</label>
+        <input type="text" id="reg-name" class="form-control" placeholder="Masalan: Abdurashid domla" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reg-phone">📞 Telefon raqami:</label>
+        <input type="tel" id="reg-phone" class="form-control" placeholder="+998 90 123 45 67" required autocomplete="tel">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reg-mosque-select">🕌 Qaysi masjid mas'ulisiz?</label>
+        <select id="reg-mosque-select" class="form-control" required>
+          <option value="">-- Masjidni tanlang --</option>
+          <!-- Populated by JS -->
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reg-role">🪪 Vazifangiz / Lavozimingiz:</label>
+        <select id="reg-role" class="form-control">
+          <option value="Imom-xatib">Imom-xatib</option>
+          <option value="Noib imom">Noib imom</option>
+          <option value="Masjid mutasaddisi">Masjid mutasaddisi / xodimi</option>
+          <option value="Mo'azzin">Mo'azzin</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reg-password">🔒 Yangi parol:</label>
+        <input type="password" id="reg-password" class="form-control" placeholder="Kamida 4 ta belgi" required minlength="4" autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn-primary-action" style="margin-top: 14px;">
+        <span>✅</span> <span>Hisob yaratish va kirish</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 9. USER PERSONAL CABINET (SHAXSIY KABINET) MODAL                          -->
+<!-- ========================================================================= -->
+<div id="cabinet-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-sheet cabinet-sheet">
+    <div class="sheet-handle"></div>
+    <div class="mosque-modal-header">
+      <div>
+        <h2 class="editor-title">👤 Shaxsiy Kabinet</h2>
+        <div class="editor-subtitle">Masjid mas'uli profili va boshqaruv</div>
+      </div>
+      <button class="modal-close-btn" id="btn-close-cabinet">✕</button>
+    </div>
+
+    <div class="cabinet-profile-card">
+      <div class="cabinet-avatar-wrap">
+        <div class="cabinet-avatar">🕌</div>
+        <div class="cabinet-user-details">
+          <div class="cabinet-name-row">
+            <h3 id="cabinet-name">Abdurashid domla</h3>
+            <span class="verified-badge" title="Tasdiqlangan masjid vakili">✓</span>
+          </div>
+          <div class="cabinet-role" id="cabinet-role">Imom-xatib</div>
+          <div class="cabinet-phone" id="cabinet-phone">📞 +998 90 123 45 67</div>
+        </div>
+      </div>
+
+      <div class="cabinet-assigned-box">
+        <div class="assigned-label">Biriktirilgan mas'ul masjid:</div>
+        <div class="assigned-mosque-name" id="cabinet-mosque-name">Hazrati Imom jome masjidi</div>
+        <div class="assigned-mosque-sub" id="cabinet-mosque-address">Olmazor tumani, Qorasaroy ko'chasi</div>
+      </div>
+    </div>
+
+    <!-- Quick Action Buttons -->
+    <div class="cabinet-actions">
+      <button id="btn-cabinet-edit-my-mosque" class="btn-primary-action">
+        <span>⏱️</span> <span>Mening masjidim namoz vaqtlarini o'zgartirish</span>
+      </button>
+
+      <div class="secondary-actions-row" style="margin-top: 8px;">
+        <button id="btn-cabinet-locate-mosque" class="btn-secondary-action">
+          <span>🎯</span> <span>Xaritada ochish</span>
+        </button>
+        <button id="btn-cabinet-add-mosque" class="btn-secondary-action">
+          <span>➕</span> <span>Yangi masjid qo'shish</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Edit History Section -->
+    <div class="cabinet-history-section">
+      <div class="cabinet-section-title">📋 Siz kiritgan o'zgarishlar tarixi:</div>
+      <div class="cabinet-history-list" id="cabinet-history-list">
+        <div class="history-empty">Hozircha o'zgartirishlar kiritilmagan</div>
+      </div>
+    </div>
+
+    <div class="cabinet-footer">
+      <button id="btn-logout" class="btn-logout">
+        <span>🚪</span> <span>Tizimdan chiqish</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating PWA Install Prompt for Android/iOS -->
+<div id="pwa-install-banner" class="install-banner" style="display: none;">
+  <div class="install-banner-content">
+    <img src="icons/icon-192.png" alt="App Icon" class="install-banner-icon">
+    <div class="install-banner-text">
+      <div class="install-banner-title">Ilovani telefonga o'rnatish</div>
+      <div class="install-banner-desc">Brauzersiz, alohida mustaqil ilova sifatida ishlaydi</div>
+    </div>
+  </div>
+  <div class="install-banner-actions">
+    <button id="btn-install-dismiss" class="install-banner-dismiss">Keyinroq</button>
+    <button id="btn-install-action" class="install-banner-confirm">O'rnatish 📲</button>
+  </div>
+</div>
+
+<!-- Toast Feedback -->
+<div id="app-toast" class="toast">
+  <span>✅</span>
+  <span id="toast-message">Amal muvaffaqiyatli bajarildi</span>
+</div>
+
+<!-- Scripts -->
+<script src="js/leaflet.js"></script>
+<script src="js/leaflet.markercluster.js"></script>
+<script src="js/app.js?v=18.0"></script>
+
+</body>
+</html>
